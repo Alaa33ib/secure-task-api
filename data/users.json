@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "username": "alaa",
+    "password": "$2b$10$hj2mtu2ToRBHOFvL/b3SCOtqKSSGsM/bILm7a4TOxi918yTu..DVC",
+    "role": "admin"
+  },
+  {
+    "id": 2,
+    "username": "notAlaa",
+    "password": "$2b$10$rEn.wupkn0fEup15hAP98uh1.H6bMPLubK2v7jBWKOSDu3SHSbmy.",
+    "role": "user"
+  }
+]
