@@ -1,0 +1,111 @@
+openapi: 3.0.0
+
+info:
+  title: Secure Task Management API
+  version: 1.0.0
+  description: >
+    Using advanced Express to create secure API implementing authentication, autherization,
+    RBAC, JWT, API versioning, and Swagger/OpenAPI.
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local Development Server
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user account
+      description: >
+        Takes user credentials, hashes the password using bcrypt, and stores the information
+        inside users.json.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: alaa33
+                password:
+                  type: string
+                  example: aaa111
+                role:
+                  type: string
+                  description: account access type, defaults to 'user'
+                  example: user
+
+      responses:
+        '201':
+          description: request successful, account created.
+        '400':
+          description: missing credentials or duplicate username
+
+  /auth/login:
+    post:
+      summary: Authenticating user credentials
+      description: validates account credentials and creates a one hour expition token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: alaa33
+                password:
+                  type: string
+                  example: aaa111
+      responses:
+        '200':
+          description: Authentication complete, returns a valid JWT token.
+        '401':
+          description: Invalid username or password, not authenticated
+  /tasks:
+    get:
+      summary: Fetch all tasks
+      description: returns a confirmation message, accessable by all users
+      security: 
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successfully authenticated and returns the data
+        '401':
+          description: Access denied. No token was provided
+        '403':
+          description: Invalid or expired token
+  /tasks/{id}:
+    delete:
+      summary: Delete a task by ID
+      description: Deleting an existing task, only admin is authorized to delete
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "4"
+      responses:
+        '200':
+          description: Task removed successfully by an admin
+        '401':
+          description: Access denied. unotherized request token
+        '403':
+          description: Forbidden. Unauthorized access (not an admin)
+  

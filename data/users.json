@@ -10,5 +10,17 @@
     "username": "notAlaa",
     "password": "$2b$10$rEn.wupkn0fEup15hAP98uh1.H6bMPLubK2v7jBWKOSDu3SHSbmy.",
     "role": "user"
+  },
+  {
+    "id": 3,
+    "username": "alaa33",
+    "password": "$2b$10$U4DAPlpPx6yUTzZCx7CBA.PMHqyu3b94PCUC8/1tpXDIpDdcP56yu",
+    "role": "user"
+  },
+  {
+    "id": 4,
+    "username": "alaa22",
+    "password": "$2b$10$9NcGNfoPk9w6avsQ0v2RouArh26bIbsrIXLaC3BmEZmT1UZcfleJ.",
+    "role": "admin"
   }
 ]
