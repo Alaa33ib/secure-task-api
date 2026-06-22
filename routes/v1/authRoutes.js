@@ -8,10 +8,12 @@ const router = express.Router();
 const users_file = './data/users.json';
 const JWT_SECRET = "secret_key_aaa111";
 
+// User registeration path (creates a new account)
 router.post('/register', async (req, res, next)=>{
     try{
         const {username, password, role} = req.body;
 
+        // Check for credentials
         if (!username || ! password){
             const error = new Error("Username and password are required");
             error.statusCode = 400;
@@ -21,14 +23,17 @@ router.post('/register', async (req, res, next)=>{
         const data = await fs.readFile(users_file, 'utf-8');
         const users = JSON.parse(data);
         
+        // Check if the username exists
         if (users.some(u => u.username.toLowerCase() === username.toLowerCase())){
             const error  = new Error("Username already exists, enter a new user or login");
             error.statusCode = 400;
             return next(error);
         }
-
+        
+        // Hashing the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Create and save the new user to the users.json file
         const newUser = {
             id: users.length > 0 ? users[users.length - 1 ].id + 1 : 1,
             username,
@@ -49,6 +54,7 @@ router.post('/register', async (req, res, next)=>{
     }
 })
 
+// Path for loging in into an existing account, returns the authorization token.
 router.post('/login', async (req, res, next)=>{
     try{
         const { username, password} = req.body;
@@ -56,6 +62,7 @@ router.post('/login', async (req, res, next)=>{
         const data = await fs.readFile(users_file, 'utf-8');
         const users = JSON.parse(data);
 
+        // Matches the user with their record in the json file
         const user = users.find( u => u.username.toLowerCase()=== username.toLowerCase());
 
         if (!user){
@@ -71,6 +78,7 @@ router.post('/login', async (req, res, next)=>{
             return next(error);
         }
 
+        // Creates a session token that expires in an hour
         const token  = jwt.sign(
             {
                 id: user.id,

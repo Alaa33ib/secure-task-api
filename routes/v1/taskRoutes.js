@@ -6,7 +6,7 @@ import fs from "fs/promises";
 const router = express.Router();
 const TASKS_FILE = './data/tasks.json';
 
-
+// Path to get all tasks, checks if the user is authorized with the token. Accessable for all users
 router.get('/', verifyToken, async (req, res, next)=> {
     try {
         const data = await fs.readFile(TASKS_FILE, 'utf-8');
@@ -23,6 +23,7 @@ router.get('/', verifyToken, async (req, res, next)=> {
 
 });
 
+// Path to create a new task, validates the user input and their token. Accessable to all users
 router.post('/', verifyToken, validateTask, async (req, res, next)=>{
     try{
         const data = await fs.readFile(TASKS_FILE, 'utf-8');
@@ -39,6 +40,7 @@ router.post('/', verifyToken, validateTask, async (req, res, next)=>{
     }
 });
 
+// Path to update an existing task, verifies tokena dn validates input. Accessable to all users
 router.put('/:id', verifyToken, validateUpdateTask, async (req, res, next)=>{
     try{
         const data = await fs.readFile(TASKS_FILE, 'utf-8');
@@ -66,6 +68,7 @@ router.put('/:id', verifyToken, validateUpdateTask, async (req, res, next)=>{
     }
 });
 
+// Path to delete an existing task, validates token and checks for authorization. Accessable to admins only
 router.delete('/:id', verifyToken, authorizeRoles(['admin']), async (req, res, next)=>{
     try{
         const data = await fs.readFile(TASKS_FILE, 'utf-8');
