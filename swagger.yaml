@@ -88,7 +88,78 @@ paths:
           description: Access denied. No token was provided
         '403':
           description: Invalid or expired token
+
+    post:
+      summary: Create a new task
+      description: Validates input then creates a new task. Accessable to all users.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - priority
+              properties:
+                title:
+                  type: string
+                  example: Complete Week#4 Tasks
+                priority:
+                  type: string
+                  description: Task urgency ['high', 'medium', 'low']
+                  example: high
+                progress:
+                  type: integer
+                  description: Task completeness percentage
+                  example: 100
+      responses:
+        '201':
+          description: Task recorded successfully.
+        '400':
+          description: Validation failed.
+        '401':
+          description: Unauthorized. Missing security passport.
+
   /tasks/{id}:
+    put:
+      summary: Updates an existing task by ID
+      description: Validates the id and input and updates the data file. Accessable by all users.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "1"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Complete Week#4 Tasks
+                priority:
+                  type: string
+                  example: high
+                progress:
+                  type: integer
+                  example: 100
+      responses:
+        '200':
+          description: Changes saved successfully.
+        '400':
+          description: Input validation failed.
+        '404':
+          description: Target task ID not found in storage.     
+
     delete:
       summary: Delete a task by ID
       description: Deleting an existing task, only admin is authorized to delete
@@ -108,4 +179,6 @@ paths:
           description: Access denied. unotherized request token
         '403':
           description: Forbidden. Unauthorized access (not an admin)
+        '404':
+          description: Target task ID not found in storage.
   

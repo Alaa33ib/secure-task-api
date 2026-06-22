@@ -22,5 +22,17 @@
     "username": "alaa22",
     "password": "$2b$10$9NcGNfoPk9w6avsQ0v2RouArh26bIbsrIXLaC3BmEZmT1UZcfleJ.",
     "role": "admin"
+  },
+  {
+    "id": 5,
+    "username": "alaa333",
+    "password": "$2b$10$cpgn/DhOQRV3pNGXVuZOqe1JM4oXNyxXrfPobIQmbBlwo04Be/4m.",
+    "role": "user"
+  },
+  {
+    "id": 6,
+    "username": "alaa1",
+    "password": "$2b$10$n5LOKKg0ZEUo0vfd1AcBFu3bGMik6aSJb7wOaZXfdQ9Gxi7X0bfTO",
+    "role": "admin"
   }
 ]
