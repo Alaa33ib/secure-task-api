@@ -8,8 +8,9 @@ info:
     RBAC, JWT, API versioning, and Swagger/OpenAPI.
 
 servers:
-  - url: http://localhost:3000/api/v1
+  - url: http://localhost:3000
     description: Local Development Server
+    
 components:
   securitySchemes:
     BearerAuth:
@@ -17,7 +18,7 @@ components:
       scheme: bearer
       bearerFormat: JWT
 paths:
-  /auth/register:
+  /api/v1/auth/register:
     post:
       summary: Register a new user account
       description: >
@@ -50,7 +51,7 @@ paths:
         '400':
           description: missing credentials or duplicate username
 
-  /auth/login:
+  /api/v1/auth/login:
     post:
       summary: Authenticating user credentials
       description: validates account credentials and creates a one hour expition token.
@@ -75,7 +76,7 @@ paths:
           description: Authentication complete, returns a valid JWT token.
         '401':
           description: Invalid username or password, not authenticated
-  /tasks:
+  /api/v1/tasks:
     get:
       summary: Fetch all tasks
       description: returns a confirmation message, accessable by all users
@@ -123,7 +124,7 @@ paths:
         '401':
           description: Unauthorized. Missing security passport.
 
-  /tasks/{id}:
+  /api/v1/tasks/{id}:
     put:
       summary: Updates an existing task by ID
       description: Validates the id and input and updates the data file. Accessable by all users.
@@ -181,4 +182,109 @@ paths:
           description: Forbidden. Unauthorized access (not an admin)
         '404':
           description: Target task ID not found in storage.
-  
+  /api/v2/tasks:
+    get:
+      summary: Fetch all tasks
+      description: returns all tasks message, accessable by all users
+      security: 
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successfully authenticated and returns the data
+        '401':
+          description: Access denied. No token was provided
+        '403':
+          description: Invalid or expired token
+
+    post:
+      summary: Create a new task
+      description: Validates input then creates a new task. Accessable to all users.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - priority
+              properties:
+                title:
+                  type: string
+                  example: Complete Week#4 Tasks
+                priority:
+                  type: string
+                  description: Task urgency ['high', 'medium', 'low']
+                  example: high
+                progress:
+                  type: integer
+                  description: Task completeness percentage
+                  example: 100
+      responses:
+        '201':
+          description: Task recorded successfully.
+        '400':
+          description: Validation failed.
+        '401':
+          description: Unauthorized. Missing security passport.
+
+  /api/v2/tasks/{id}:
+    put:
+      summary: Updates an existing task by ID
+      description: Validates the id and input and updates the database. Accessable by all users.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "6677f3a2e1b4c9108a7bde31"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Complete Week#4 Tasks
+                priority:
+                  type: string
+                  example: high
+                progress:
+                  type: integer
+                  example: 100
+      responses:
+        '200':
+          description: Changes saved successfully.
+        '400':
+          description: Input validation failed.
+        '404':
+          description: Target task ID not found in storage.     
+
+    delete:
+      summary: Delete a task by ID
+      description: Deleting an existing task, only admin is authorized to delete
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "6677f3a2e1b4c9108a7bde31"
+      responses:
+        '200':
+          description: Task removed successfully by an admin
+        '401':
+          description: Access denied. unotherized request token
+        '403':
+          description: Forbidden. Unauthorized access (not an admin)
+        '404':
+          description: Target task ID not found in storage.

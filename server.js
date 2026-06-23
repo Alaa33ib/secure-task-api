@@ -3,6 +3,8 @@ import swaggerUI from "swagger-ui-express";
 import yaml from "yamljs";
 import taskRouterV1 from "./routes/v1/taskRoutes.js";
 import authRouterV1 from "./routes/v1/authRoutes.js";
+import taskRouterV2 from "./routes/v2/taskRoutes.js";
+import mongoose from "mongoose";
 
 const app = express();
 const PORT = 3000;
@@ -19,6 +21,9 @@ app.use("/api/v1/tasks", taskRouterV1);
 // Path to version #1 of the API. Register and login
 app.use('/api/v1/auth', authRouterV1);
 
+//Path to version #2 of the API. Task CRUD operations using MongoDB
+app.use('/api/v2/tasks', taskRouterV2);
+
 // Handling Errors
 app.use((error, req, res, next)=>{
     console.error("System error, stack: ", error.stack);
@@ -27,6 +32,11 @@ app.use((error, req, res, next)=>{
         error: error.message || "Internal server error"
     });
 });
+
+// mongo db connection
+const MONGODB_URI = "mongodb://127.0.0.1:27017/taskManagerDB";
+mongoose.connect(MONGODB_URI).then(()=>{ console.log("Connected to MongoDB Cloud successfully.")
+}).catch((error)=> console.log("Database connection error: ", error));
 
 // Starting the server and outputting the links
 app.listen(PORT, ()=>{
