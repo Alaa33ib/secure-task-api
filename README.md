@@ -1,15 +1,16 @@
-# Secure Task Management API
+# Secure Task Management API (MongoDB Integrated Edition)
 
-A production-ready Node.js and Express RESTful API built with focus on layered security, robust input validation, and role-based access control. The application allows users to manage a shared collection of tasks while enforcing structured security parameters at every endpoint.
+A production-ready Node.js and Express RESTful API built with a strong focus on layered security, robust database constraints, environmental safety, and role-based access control. This version upgrades the application storage engine from local files to a structured MongoDB document database while keeping the original architecture completely intact for legacy compliance.
 
 ## Core Features
 
-* **API Versioning:** All endpoints are structured under a versioned routing architecture (`/api/v1/...`) to ensure smooth backward compatibility.
-* **Authentication & Session Management:** Implements secure user registration and login pathways utilizing `bcryptjs` for reliable password hashing and `jsonwebtoken` (JWT) for stateless session tokens.
-* **Role-Based Access Control (RBAC):** Restricts dangerous system operations based on administrative tiers. Standard authenticated users can read, create, and modify tasks, while resource deletion is strictly locked to users possessing the `admin` role.
-* **Strict Input Validation:** Custom middleware intercepts execution flows to inspect data payloads before database storage, preventing data corruption or empty writes.
-* **Centralized Error Handling:** Uses a unified Express error-handling lifecycle to catch system faults smoothly without crashing the active server engine.
-* **Interactive Documentation:** Equipped with a native Swagger UI environment built directly into the server routing layout using structural OpenAPI declarations.
+* **Parallel API Versioning:** All endpoints are split across structured routing folders. Version 1 (`/api/v1/...`) handles operations via local JSON files, while Version 2 (`/api/v2/...`) utilizes an enterprise database layer to ensure zero service disruption.
+* **Database Modeling & Persistence:** Leverages **Mongoose Object Modeling** to define rigid document schemas, manage data defaults, and enforce secure data isolation constraints (such as `select: false` to lock password hash visibility).
+* **Authentication & Session Management:** Implements secure user registration and login pathways utilizing `bcryptjs` for password hashing and `jsonwebtoken` (JWT) for stateless session tokens.
+* **Role-Based Access Control (RBAC):** Restricts dangerous system operations based on administrative tiers. Standard authenticated users can read, create, and modify tasks, while resource deletion is strictly locked to accounts possessing the `admin` role.
+* **Database-Driven Validation Middleware:** Intercepts runtime traffic with validation layers. V2 lanes utilize case-insensitive asynchronous MongoDB regex queries to reject duplicate titles globally before execution hits the storage layer.
+* **Environmental Isolation:** Isolates critical signature secrets and raw URI database strings completely outside the application code space using global system variables.
+* **Interactive Documentation:** Equipped with a native Swagger UI environment built directly into the server routing layout using comprehensive OpenAPI 3.0 specifications.
 
 ---
 
@@ -17,23 +18,38 @@ A production-ready Node.js and Express RESTful API built with focus on layered s
 
 * **Runtime Environment:** Node.js
 * **Framework:** Express.js
-* **Security & Encryption:** jsonwebtoken, bcryptjs
+* **Database Engine:** MongoDB (Local instance)
+* **Object Modeling Layer:** Mongoose
+* **Security & Encryption:** jsonwebtoken, bcryptjs, dotenv
 * **Documentation Suite:** swagger-ui-express, yamljs
-* **Database Management:** File System (`fs/promises`) locally mapped JSON arrays
 
 ---
 
-## Local Installation
+## Local Installation & Setup
 
-1. Clone or copy this project folder to your local machine.
+1. **Clone or copy** this project folder to your local machine.
 
-2. Initialize dependencies by executing the following command in your terminal root directory:
+2. **Install project dependencies** by executing the following command in your terminal root directory:
 
 ```bash
 npm install
 ```
 
-3. Boot up the server process engine:
+3. **Configure your environment variables:** Create a file named exactly `.env` at the absolute root of your project folder and define the following hidden application tokens:
+
+```env
+PORT=3000
+MONGODB_URI=mongodb://127.0.0.1:27017/taskManagerDB
+JWT_SECRET=your_custom_secure_secret_string_here
+```
+
+4. **Boot up your local database instance:** Open a separate system terminal window, change directories to your local MongoDB binary installation location, and start the daemon engine process:
+
+```powershell
+.\mongod.exe
+```
+
+5. **Start your backend application server process:** Return to your main project terminal window and execute:
 
 ```bash
 node server.js
@@ -43,9 +59,9 @@ node server.js
 
 ## How to Test the API Using Swagger
 
-The entire application can be fully exercised and verified right from your web browser without using standalone clients like Postman.
+The entire dual-version architecture can be fully exercised and verified right from your web browser without using standalone clients like Postman.
 
-1. Start your local server using `node server.js`.
+1. Ensure both your local MongoDB background server and Node application are actively running.
 
 2. Open your preferred web browser and navigate directly to the interactive documentation dashboard at:
 
@@ -53,28 +69,28 @@ The entire application can be fully exercised and verified right from your web b
 http://localhost:3000/api-docs
 ```
 
-### Register a Test User
+### Registering and Testing Database Version 2 (V2)
 
-* Click on the green `POST /auth/register` dropdown menu block.
-* Click the **Try it out** button on the right side.
-* Modify the JSON schema template parameters (e.g., set `"role": "admin"` to test full privileges or leave it as `"user"` to test restrictions).
-* Click the blue **Execute** button to store the user account profile inside the storage file.
+#### Account Creation
 
-### Log In to Generate Your Access Token
+* Expand the `POST /api/v2/auth/register` endpoint.
+* Hit **Try it out**, provide a unique username/password combo, select a role configuration (`user` or `admin`), and hit **Execute**.
+* The resulting payload will show a 24-character hexadecimal `_id` successfully stamped inside MongoDB.
 
-* Open the `POST /auth/login` dropdown menu block.
-* Click **Try it out** and enter the exact credentials you just registered.
-* Click **Execute**.
-* Locate the successful response body string and copy the entire alphanumeric sequence printed next to the `"token"` key.
+#### Token Retrieval
 
-### Authorize Your Browser Session
+* Expand `POST /api/v2/auth/login`.
+* Submit those same matching credentials and click **Execute** to fetch your generated JWT security string.
+* Copy the token.
 
-* Scroll back to the absolute top of the webpage.
-* Click the locked **Authorize** button on the right.
-* Paste your copied token string directly inside the value input field text box.
-* Click **Authorize**, then click **Close**.
+#### Session Authorization
 
-### Execute Task Management Actions
+* Scroll to the absolute top of the page.
+* Click the locked **Authorize** button.
+* Paste the token block into the value input text box.
+* Click save.
 
-* The padlocks next to all protected task pathways (`GET`, `POST`, `PUT`, `DELETE`) will now be locked shut, signaling an authenticated layer.
-* You can now expand these task blocks, use **Try it out**, fill in properties (`title`, `priority`, `progress`), and click **Execute** to see data operations interact with your backend files live.
+#### Executing Task CRUD Lifecycle
+
+* The padlocks next to your protected `/api/v2/tasks` database endpoints will lock shut.
+* You can now read (**GET**), generate (**POST**), change (**PUT**), and clear (**DELETE**) real task documents directly inside your live collections!
