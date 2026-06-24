@@ -4,6 +4,8 @@ import yaml from "yamljs";
 import taskRouterV1 from "./routes/v1/taskRoutes.js";
 import authRouterV1 from "./routes/v1/authRoutes.js";
 import taskRouterV2 from "./routes/v2/taskRoutes.js";
+import authRouterV2 from "./routes/v2/authRoutes.js";
+
 import mongoose from "mongoose";
 
 const app = express();
@@ -17,12 +19,13 @@ app.use(express.json());
 
 // Path to version #1 of the API. Task CRUD operations
 app.use("/api/v1/tasks", taskRouterV1);
-
 // Path to version #1 of the API. Register and login
 app.use('/api/v1/auth', authRouterV1);
 
 //Path to version #2 of the API. Task CRUD operations using MongoDB
 app.use('/api/v2/tasks', taskRouterV2);
+// Path to version #2 of the API. Register and login
+app.use('/api/v2/auth', authRouterV2);
 
 // Handling Errors
 app.use((error, req, res, next)=>{

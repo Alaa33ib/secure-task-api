@@ -1,6 +1,6 @@
 import express from "express";
 import {verifyToken, authorizeRoles} from "../../middleware/auth.js";
-import { validateTask, validateUpdateTask } from "../../middleware/validate.js";
+import { validateTask, validateUpdateTask } from "../../middleware/validateV2.js";
 import Task from "../../models/Task.js";
 
 const router = express.Router();

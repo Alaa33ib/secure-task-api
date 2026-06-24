@@ -182,6 +182,67 @@ paths:
           description: Forbidden. Unauthorized access (not an admin)
         '404':
           description: Target task ID not found in storage.
+  
+  /api/v2/auth/register:
+    post:
+      summary: Register a new user account
+      description: >
+        Takes user credentials, hashes the password using bcrypt, and stores the information
+        inside the mongodb database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: alaa33
+                password:
+                  type: string
+                  example: aaa111
+                role:
+                  type: string
+                  description: account access type, defaults to 'user'
+                  example: user
+
+      responses:
+        '201':
+          description: Request successful, account created.
+        '400':
+          description: Missing credentials or duplicate username
+
+
+  /api/v2/auth/login:
+    post:
+      summary: Authenticating user credentials
+      description: validates account credentials and creates a one hour expition token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: alaa33
+                password:
+                  type: string
+                  example: aaa111
+      responses:
+        '200':
+          description: Authentication complete, returns a valid JWT token.
+        '401':
+          description: Invalid username or password, not authenticated
+
   /api/v2/tasks:
     get:
       summary: Fetch all tasks
