@@ -5,11 +5,12 @@ import taskRouterV1 from "./routes/v1/taskRoutes.js";
 import authRouterV1 from "./routes/v1/authRoutes.js";
 import taskRouterV2 from "./routes/v2/taskRoutes.js";
 import authRouterV2 from "./routes/v2/authRoutes.js";
-
+import dotenv from "dotenv";
 import mongoose from "mongoose";
 
+dotenv.config();
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Loading the swagger documentation and UI 
 const swaggerDoc = yaml.load('./swagger.yaml');
@@ -37,7 +38,7 @@ app.use((error, req, res, next)=>{
 });
 
 // mongo db connection
-const MONGODB_URI = "mongodb://127.0.0.1:27017/taskManagerDB";
+const MONGODB_URI = process.env.MONGODB_URI;
 mongoose.connect(MONGODB_URI).then(()=>{ console.log("Connected to MongoDB Cloud successfully.")
 }).catch((error)=> console.log("Database connection error: ", error));
 

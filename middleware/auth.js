@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
 // Asigning secret 
-const JWT_SECRET = "secret_key_aaa111";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Middleware that verifies tokens attached to the request's headder from the client
 export const verifyToken = (req, res, next) => {
